@@ -7,10 +7,7 @@ import {
 interface Props {
 	piece: PieceInterface;
 	position: PositionInterface;
-	handlePieceClick: (
-		piece: PieceInterface,
-		position: PositionInterface
-	) => void;
+	handleCellClick: (piece: PieceInterface, position: PositionInterface) => void;
 	activePosition: PositionInterface | null;
 	possibleMoves: MoveInterface[];
 	lastMove: MoveInterface | null;
@@ -21,7 +18,7 @@ function Cell({
 	position,
 	activePosition,
 	possibleMoves,
-	handlePieceClick,
+	handleCellClick,
 	lastMove,
 }: Props) {
 	const getPieceSymbol = (piece: PieceInterface) => {
@@ -91,7 +88,7 @@ function Cell({
                 font-bold
 			`}
 			onClick={() => {
-				handlePieceClick(piece, position);
+				handleCellClick(piece, position);
 			}}
 		>
 			<div

@@ -12,6 +12,8 @@ interface MoveInterface {
 	from: PositionInterface;
 	to: PositionInterface;
 	piece: PieceInterface;
+	isPriseEnPassant: boolean;
+	isCastling: boolean;
 }
 
 interface CellInterface {
@@ -19,4 +21,15 @@ interface CellInterface {
 	position: PositionInterface;
 }
 
-export type { PieceInterface, PositionInterface, MoveInterface, CellInterface };
+interface AlgebricMoveInterface {
+	white: string;
+	black: string;
+}
+
+export type {
+	PieceInterface,
+	PositionInterface,
+	MoveInterface,
+	CellInterface,
+	AlgebricMoveInterface,
+};

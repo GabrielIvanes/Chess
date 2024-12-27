@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Cell from './Cell';
 import {
+	AlgebricMoveInterface,
 	CellInterface,
 	MoveInterface,
 	PieceInterface,
@@ -15,6 +16,7 @@ function Board() {
 	const [possibleMoves, setPossibleMoves] = useState<MoveInterface[]>([]);
 	const [activeTeam, setActiveTeam] = useState<number>(1);
 	const [deadPieces, setDeadPieces] = useState<PieceInterface[]>([]);
+	const [moves, setMoves] = useState<AlgebricMoveInterface[]>([]);
 
 	useEffect(() => {
 		const initialBoard: CellInterface[][] = [
@@ -92,12 +94,88 @@ function Board() {
 		];
 
 		setBoard(initialBoard);
+		setPossibleMoves([]);
+		setActivePosition(null);
+		setActiveTeam(1);
+		setLastMove(null);
+		setDeadPieces([]);
 	}, []);
 
-	function handlePieceClick(
-		piece: PieceInterface,
-		position: PositionInterface
-	) {
+	function getSquareNotation(position: PositionInterface) {
+		const col = String.fromCharCode(position.col + 97);
+		const row = (8 - position.row).toString();
+		return { col, row };
+	}
+
+	function getAlgebricNotation(move: MoveInterface, board: CellInterface[][]) {
+		let tmpAlgebricMove: string = '';
+		switch (move.piece.num) {
+			case 1:
+				tmpAlgebricMove = '';
+				break;
+			case 2:
+				tmpAlgebricMove = 'R';
+				break;
+			case 3:
+				tmpAlgebricMove = 'N';
+				break;
+			case 4:
+				tmpAlgebricMove = 'B';
+				break;
+			case 5:
+				tmpAlgebricMove = 'Q';
+				break;
+			case 6:
+				tmpAlgebricMove = 'K';
+				break;
+		}
+
+		if (board[move.to.row][move.to.col].piece.num != 0) {
+			if (move.piece.num == 1) {
+				tmpAlgebricMove += getSquareNotation(move.from).col;
+			}
+			tmpAlgebricMove += 'x';
+		}
+
+		tmpAlgebricMove += `${getSquareNotation(move.to).col}${
+			getSquareNotation(move.to).row
+		}`;
+
+		return {
+			white: activeTeam == 1 ? tmpAlgebricMove : '',
+			black: activeTeam == 2 ? tmpAlgebricMove : '',
+		};
+	}
+
+	function movePiece(move: MoveInterface, board: CellInterface[][]) {
+		const tmpDeadPieces = deadPieces;
+		const tmpAlgebricMove = getAlgebricNotation(move, board);
+
+		if (board[move.to.row][move.to.col].piece.num != 0) {
+			tmpDeadPieces.push(board[move.to.row][move.to.col].piece);
+		}
+
+		if (move.isPriseEnPassant) {
+			if (move.piece.team == 1) {
+				tmpDeadPieces.push(board[move.to.row + 1][move.to.col].piece);
+				board[move.to.row + 1][move.to.col].piece = { num: 0, team: 0 };
+			} else {
+				tmpDeadPieces.push(board[move.to.row - 1][move.to.col].piece);
+				board[move.to.row - 1][move.to.col].piece = { num: 0, team: 0 };
+			}
+		}
+		board[move.to.row][move.to.col].piece = move.piece;
+		board[move.from.row][move.from.col].piece = { num: 0, team: 0 };
+		setBoard(board);
+		setActiveTeam(move.piece.team == 1 ? 2 : 1);
+		setDeadPieces(tmpDeadPieces);
+		setActivePosition(null);
+		setPossibleMoves([]);
+		setLastMove(move);
+		setMoves([...moves, tmpAlgebricMove]);
+	}
+
+	function handleCellClick(piece: PieceInterface, position: PositionInterface) {
 		let moves: MoveInterface[] = possibleMoves;
 		const tmpBoard = board;
 		if (
@@ -108,19 +186,8 @@ function Board() {
 			const move = moves.find(
 				(move) => move.to.row === position.row && move.to.col === position.col
 			);
-			const tmpDeadPieces = deadPieces;
 			if (!move) return;
-			if (tmpBoard[move.to.row][move.to.col].piece.num != 0) {
-				tmpDeadPieces.push(tmpBoard[move.to.row][move.to.col].piece);
-			}
-			tmpBoard[move.to.row][move.to.col].piece = move.piece;
-			tmpBoard[move.from.row][move.from.col].piece = { num: 0, team: 0 };
-			setBoard(tmpBoard);
-			setActiveTeam(move.piece.team == 1 ? 2 : 1);
-			setDeadPieces(tmpDeadPieces);
-			setActivePosition(null);
-			setPossibleMoves([]);
-			setLastMove(move);
+			movePiece(move, tmpBoard);
 		} else {
 			moves = [];
 			if (piece.num != 0 && piece.team == activeTeam) {
@@ -185,6 +252,8 @@ function Board() {
 							from: position,
 							to: { row: position.row, col: i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -193,6 +262,8 @@ function Board() {
 						from: position,
 						to: { row: position.row, col: i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -207,6 +278,8 @@ function Board() {
 							from: position,
 							to: { row: position.row, col: i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -215,6 +288,8 @@ function Board() {
 						from: position,
 						to: { row: position.row, col: i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -240,6 +315,8 @@ function Board() {
 							from: position,
 							to: { row: i, col: position.col },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -248,6 +325,8 @@ function Board() {
 						from: position,
 						to: { row: i, col: position.col },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -263,6 +342,8 @@ function Board() {
 							from: position,
 							to: { row: i, col: position.col },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -271,6 +352,8 @@ function Board() {
 						from: position,
 						to: { row: i, col: position.col },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -302,6 +385,8 @@ function Board() {
 							from: position,
 							to: { row: position.row - i, col: position.col - i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -310,6 +395,8 @@ function Board() {
 						from: position,
 						to: { row: position.row - i, col: position.col - i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -331,6 +418,8 @@ function Board() {
 							from: position,
 							to: { row: position.row - i, col: position.col + i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -339,6 +428,8 @@ function Board() {
 						from: position,
 						to: { row: position.row - i, col: position.col + i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -360,6 +451,8 @@ function Board() {
 							from: position,
 							to: { row: position.row + i, col: position.col - i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -368,6 +461,8 @@ function Board() {
 						from: position,
 						to: { row: position.row + i, col: position.col - i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -389,6 +484,8 @@ function Board() {
 							from: position,
 							to: { row: position.row + i, col: position.col + i },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 					break;
@@ -397,13 +494,15 @@ function Board() {
 						from: position,
 						to: { row: position.row + i, col: position.col + i },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
 		}
 	}
 
-	// add "en passant" and "promotion" to the function and verify king safety (maybe in a separate function)
+	// add "promotion" to the function
 	function movePawn(
 		piece: PieceInterface,
 		position: PositionInterface,
@@ -423,6 +522,8 @@ function Board() {
 					from: position,
 					to: { row: position.row - 1, col: position.col },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
 				});
 				if (isPawnInInitialRow) {
 					if (
@@ -433,6 +534,8 @@ function Board() {
 							from: position,
 							to: { row: position.row - 2, col: position.col },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 				}
@@ -446,6 +549,8 @@ function Board() {
 					from: position,
 					to: { row: position.row - 1, col: position.col - 1 },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
 				});
 			}
 			if (
@@ -457,6 +562,38 @@ function Board() {
 					from: position,
 					to: { row: position.row - 1, col: position.col + 1 },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
+				});
+			}
+			if (
+				lastMove &&
+				lastMove.piece.num == 1 && // Piece is a pawn
+				position.row == lastMove.to.row && // black pawn is in the same row as the white pawn
+				position.col == lastMove.to.col + 1 &&
+				lastMove.from.row == lastMove.to.row - 2 // black pawn moved 2 squares
+			) {
+				possibleMoves.push({
+					from: position,
+					to: { row: position.row - 1, col: position.col - 1 },
+					piece: piece,
+					isPriseEnPassant: true,
+					isCastling: false,
+				});
+			}
+			if (
+				lastMove &&
+				lastMove.piece.num == 1 && // Piece is a pawn
+				position.row == lastMove.to.row && // black pawn is in the same row as the white pawn
+				position.col == lastMove.to.col - 1 &&
+				lastMove.from.row == lastMove.to.row - 2 // black pawn moved 2 squares
+			) {
+				possibleMoves.push({
+					from: position,
+					to: { row: position.row - 1, col: position.col + 1 },
+					piece: piece,
+					isPriseEnPassant: true,
+					isCastling: false,
 				});
 			}
 		} else if (piece.team == 2) {
@@ -468,6 +605,8 @@ function Board() {
 					from: position,
 					to: { row: position.row + 1, col: position.col },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
 				});
 				if (isPawnInInitialRow) {
 					if (
@@ -478,6 +617,8 @@ function Board() {
 							from: position,
 							to: { row: position.row + 2, col: position.col },
 							piece: piece,
+							isPriseEnPassant: false,
+							isCastling: false,
 						});
 					}
 				}
@@ -491,6 +632,8 @@ function Board() {
 					from: position,
 					to: { row: position.row + 1, col: position.col - 1 },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
 				});
 			}
 			if (
@@ -502,6 +645,38 @@ function Board() {
 					from: position,
 					to: { row: position.row + 1, col: position.col + 1 },
 					piece: piece,
+					isPriseEnPassant: false,
+					isCastling: false,
+				});
+			}
+			if (
+				lastMove &&
+				lastMove.piece.num == 1 && // Piece is a pawn
+				position.row == lastMove.to.row && // black pawn is in the same row as the white pawn
+				position.col == lastMove.to.col + 1 &&
+				lastMove.from.row == lastMove.to.row + 2 // white pawn moved 2 squares
+			) {
+				possibleMoves.push({
+					from: position,
+					to: { row: position.row + 1, col: position.col - 1 },
+					piece: piece,
+					isPriseEnPassant: true,
+					isCastling: false,
+				});
+			}
+			if (
+				lastMove &&
+				lastMove.piece.num == 1 && // Piece is a pawn
+				position.row == lastMove.to.row && // black pawn is in the same row as the white pawn
+				position.col == lastMove.to.col - 1 &&
+				lastMove.from.row == lastMove.to.row + 2 // white pawn moved 2 squares
+			) {
+				possibleMoves.push({
+					from: position,
+					to: { row: position.row + 1, col: position.col + 1 },
+					piece: piece,
+					isPriseEnPassant: true,
+					isCastling: false,
 				});
 			}
 		}
@@ -562,6 +737,8 @@ function Board() {
 						from: position,
 						to: { row: newRow, col: newCol },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -602,6 +779,7 @@ function Board() {
 		return possibleMoves;
 	}
 
+	// add "castling" to the function
 	function moveKing(
 		piece: PieceInterface,
 		position: PositionInterface,
@@ -642,6 +820,8 @@ function Board() {
 						from: position,
 						to: { row: newRow, col: newCol },
 						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: false,
 					});
 				}
 			}
@@ -659,7 +839,7 @@ function Board() {
 						piece={cell.piece}
 						position={cell.position}
 						activePosition={activePosition}
-						handlePieceClick={handlePieceClick}
+						handleCellClick={handleCellClick}
 						possibleMoves={possibleMoves}
 						lastMove={lastMove}
 					/>
