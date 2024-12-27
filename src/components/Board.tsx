@@ -17,7 +17,9 @@ function Board() {
 	const [possibleMoves, setPossibleMoves] = useState<MoveInterface[]>([]);
 	const [activeTeam, setActiveTeam] = useState<number>(1);
 	const [deadPieces, setDeadPieces] = useState<PieceInterface[]>([]);
-	const [moves, setMoves] = useState<AlgebricMoveInterface[]>([]);
+	const [algrebricMoves, setAlgrebricMoves] = useState<AlgebricMoveInterface[]>(
+		[]
+	);
 	const [castlingRights, setCastlingRights] = useState<CastlingRightsInterface>(
 		{
 			white: { kingside: true, queenside: true },
@@ -106,11 +108,19 @@ function Board() {
 		setActiveTeam(1);
 		setLastMove(null);
 		setDeadPieces([]);
+		setCastlingRights({
+			white: { kingside: true, queenside: true },
+			black: { kingside: true, queenside: true },
+		});
 	}, []);
+
+	useEffect(() => {
+		console.log(castlingRights);
+	}, [castlingRights]);
 
 	function getSquareNotation(position: PositionInterface) {
 		const col = String.fromCharCode(position.col + 97);
-		const row = (8 - position.row).toString();
+		const row = (7 - position.row).toString();
 		return { col, row };
 	}
 
@@ -174,61 +184,18 @@ function Board() {
 			tmpDeadPieces.push(board[move.to.row][move.to.col].piece);
 		}
 
+		console.log('move.piece.num:', move.piece.num);
+
 		if (move.piece.num == 1) {
 			if (move.piece.team == 1) {
 				if (move.isPriseEnPassant) {
 					tmpDeadPieces.push(board[move.to.row + 1][move.to.col].piece);
 					board[move.to.row + 1][move.to.col].piece = { num: 0, team: 0 };
 				}
-
-				if (move.to.row == 7) {
-					move.piece.num = 5;
-				}
 			} else {
 				if (move.isPriseEnPassant) {
 					tmpDeadPieces.push(board[move.to.row - 1][move.to.col].piece);
 					board[move.to.row - 1][move.to.col].piece = { num: 0, team: 0 };
-				}
-				if (move.to.row == 0) {
-					move.piece.num = 5;
-				}
-			}
-		} else if (move.piece.num == 2) {
-			if (move.piece.team == 1) {
-				if (move.from.col == 0) {
-					setCastlingRights({
-						white: {
-							kingside: castlingRights.white.kingside,
-							queenside: false,
-						},
-						black: castlingRights.black,
-					});
-				} else if (move.from.col == 7) {
-					setCastlingRights({
-						white: castlingRights.white,
-						black: {
-							kingside: false,
-							queenside: castlingRights.black.queenside,
-						},
-					});
-				}
-			} else {
-				if (move.from.col == 0) {
-					setCastlingRights({
-						white: castlingRights.white,
-						black: {
-							kingside: castlingRights.black.kingside,
-							queenside: false,
-						},
-					});
-				} else if (move.from.col == 7) {
-					setCastlingRights({
-						white: castlingRights.white,
-						black: {
-							kingside: false,
-							queenside: castlingRights.black.queenside,
-						},
-					});
 				}
 			}
 		} else if (move.piece.num == 6) {
@@ -258,19 +225,19 @@ function Board() {
 		if (move.isCastling) {
 			if (move.piece.team == 1) {
 				if (move.to.col < move.from.col) {
-					board[7][3].piece = board[7][0].piece;
-					board[7][0].piece = { num: 0, team: 0 };
+					board[6][3].piece = board[6][0].piece;
+					board[6][0].piece = { num: 0, team: 0 };
 				} else {
-					board[7][5].piece = board[7][7].piece;
-					board[7][7].piece = { num: 0, team: 0 };
+					board[6][5].piece = board[6][7].piece;
+					board[6][7].piece = { num: 0, team: 0 };
 				}
 			} else {
 				if (move.to.col < move.from.col) {
 					board[0][3].piece = board[0][0].piece;
 					board[0][0].piece = { num: 0, team: 0 };
 				} else {
-					board[0][5].piece = board[0][0].piece;
-					board[0][0].piece = { num: 0, team: 0 };
+					board[0][5].piece = board[0][7].piece;
+					board[0][7].piece = { num: 0, team: 0 };
 				}
 			}
 		}
@@ -278,12 +245,18 @@ function Board() {
 		board[move.to.row][move.to.col].piece = move.piece;
 		board[move.from.row][move.from.col].piece = { num: 0, team: 0 };
 		setBoard(board);
+		if (activeTeam == 1) {
+			setAlgrebricMoves([...algrebricMoves, tmpAlgebricMove]);
+		} else {
+			const lastMove = algrebricMoves[algrebricMoves.length - 1];
+			lastMove.black = tmpAlgebricMove.black;
+			setAlgrebricMoves([...algrebricMoves]);
+		}
 		setActiveTeam(move.piece.team == 1 ? 2 : 1);
 		setDeadPieces(tmpDeadPieces);
 		setActivePosition(null);
 		setPossibleMoves([]);
 		setLastMove(move);
-		setMoves([...moves, tmpAlgebricMove]);
 	}
 
 	function handleCellClick(piece: PieceInterface, position: PositionInterface) {
@@ -442,7 +415,7 @@ function Board() {
 				}
 			}
 		} else if (direction == 'down') {
-			for (let i = position.row + 1; i < 8; i++) {
+			for (let i = position.row + 1; i < 7; i++) {
 				if (!board[i] || !board[i][position.col]) {
 					break;
 				}
@@ -547,7 +520,7 @@ function Board() {
 		} else if (direction == 'down-left') {
 			for (let i = 1; i < 8; i++) {
 				if (
-					position.row + i >= 8 ||
+					position.row + i >= 7 ||
 					position.col - i < 0 ||
 					!board[position.row + i] ||
 					!board[position.row + i][position.col - i]
@@ -581,7 +554,7 @@ function Board() {
 			for (let i = 1; i < 8; i++) {
 				if (
 					position.row + i >= 8 ||
-					position.row + i >= 8 ||
+					position.col + i >= 7 ||
 					!board[position.row + i] ||
 					!board[position.row + i][position.col + i]
 				)
@@ -833,7 +806,7 @@ function Board() {
 			// Check if the new position is within bounds and exists
 			if (
 				newRow >= 0 &&
-				newRow < 8 &&
+				newRow < 7 &&
 				newCol >= 0 &&
 				newCol < 8 &&
 				board[newRow] &&
@@ -889,12 +862,12 @@ function Board() {
 		return possibleMoves;
 	}
 
-	// add "castling" to the function
 	function moveKing(
 		piece: PieceInterface,
 		position: PositionInterface,
 		board: CellInterface[][]
 	) {
+		console.log(castlingRights);
 		const possibleMoves: MoveInterface[] = [];
 
 		// All possible king moves (including diagonals)
@@ -916,7 +889,7 @@ function Board() {
 			// Check if the new position is within bounds and exists
 			if (
 				newRow >= 0 &&
-				newRow < 8 &&
+				newRow < 7 &&
 				newCol >= 0 &&
 				newCol < 8 &&
 				board[newRow] &&
@@ -936,6 +909,61 @@ function Board() {
 				}
 			}
 		});
+		if (piece.team == 1) {
+			if (castlingRights.white.kingside) {
+				if (board[6][5].piece.num == 0 && board[6][6].piece.num == 0) {
+					possibleMoves.push({
+						from: position,
+						to: { row: position.row, col: position.col + 2 },
+						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: true,
+					});
+				}
+			}
+			if (castlingRights.white.queenside) {
+				if (
+					board[6][3].piece.num == 0 &&
+					board[6][2].piece.num == 0 &&
+					board[6][1].piece.num == 0
+				) {
+					possibleMoves.push({
+						from: position,
+						to: { row: position.row, col: position.col - 2 },
+						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: true,
+					});
+				}
+			}
+		} else {
+			if (castlingRights.black.kingside) {
+				if (board[0][5].piece.num == 0 && board[0][6].piece.num == 0) {
+					possibleMoves.push({
+						from: position,
+						to: { row: position.row, col: position.col + 2 },
+						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: true,
+					});
+				}
+			}
+			if (castlingRights.black.queenside) {
+				if (
+					board[0][3].piece.num == 0 &&
+					board[0][2].piece.num == 0 &&
+					board[0][1].piece.num == 0
+				) {
+					possibleMoves.push({
+						from: position,
+						to: { row: position.row, col: position.col - 2 },
+						piece: piece,
+						isPriseEnPassant: false,
+						isCastling: true,
+					});
+				}
+			}
+		}
 
 		return possibleMoves;
 	}
