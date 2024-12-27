@@ -26,10 +26,16 @@ interface AlgebricMoveInterface {
 	black: string;
 }
 
+interface CastlingRightsInterface {
+	white: { kingside: boolean; queenside: boolean };
+	black: { kingside: boolean; queenside: boolean };
+}
+
 export type {
 	PieceInterface,
 	PositionInterface,
 	MoveInterface,
 	CellInterface,
 	AlgebricMoveInterface,
+	CastlingRightsInterface,
 };
