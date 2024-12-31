@@ -29,110 +29,27 @@ function Board() {
 	const [isGameOver, setIsGameOver] = useState<boolean>(false);
 
 	useEffect(() => {
-		// const initialBoard: CellInterface[][] = [
-		// 	// Black pieces (team 1)
-		// 	[
-		// 		{ piece: { num: 2, team: 2 }, position: { row: 0, col: 0 } },
-		// 		{ piece: { num: 3, team: 2 }, position: { row: 0, col: 1 } },
-		// 		{ piece: { num: 4, team: 2 }, position: { row: 0, col: 2 } },
-		// 		{ piece: { num: 5, team: 2 }, position: { row: 0, col: 3 } },
-		// 		{ piece: { num: 6, team: 2 }, position: { row: 0, col: 4 } },
-		// 		{ piece: { num: 4, team: 2 }, position: { row: 0, col: 5 } },
-		// 		{ piece: { num: 3, team: 2 }, position: { row: 0, col: 6 } },
-		// 		{ piece: { num: 2, team: 2 }, position: { row: 0, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 0 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 1 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 2 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 3 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 4 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 5 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 6 } },
-		// 		{ piece: { num: 1, team: 2 }, position: { row: 1, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 0 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 1 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 2 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 3 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 4 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 5 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 6 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 0 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 1 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 2 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 3 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 4 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 5 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 6 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 0 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 1 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 2 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 3 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 4 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 5 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 6 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 0 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 1 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 2 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 3 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 4 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 5 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 6 } },
-		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 0 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 1 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 2 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 3 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 4 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 5 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 6 } },
-		// 		{ piece: { num: 1, team: 1 }, position: { row: 6, col: 7 } },
-		// 	],
-		// 	[
-		// 		{ piece: { num: 2, team: 1 }, position: { row: 7, col: 0 } },
-		// 		{ piece: { num: 3, team: 1 }, position: { row: 7, col: 1 } },
-		// 		{ piece: { num: 4, team: 1 }, position: { row: 7, col: 2 } },
-		// 		{ piece: { num: 5, team: 1 }, position: { row: 7, col: 3 } },
-		// 		{ piece: { num: 6, team: 1 }, position: { row: 7, col: 4 } },
-		// 		{ piece: { num: 4, team: 1 }, position: { row: 7, col: 5 } },
-		// 		{ piece: { num: 3, team: 1 }, position: { row: 7, col: 6 } },
-		// 		{ piece: { num: 2, team: 1 }, position: { row: 7, col: 7 } },
-		// 	],
-		// ];
 		const initialBoard: CellInterface[][] = [
 			// Black pieces (team 1)
 			[
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 0 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 1 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 2 } },
+				{ piece: { num: 2, team: 2 }, position: { row: 0, col: 0 } },
+				{ piece: { num: 3, team: 2 }, position: { row: 0, col: 1 } },
+				{ piece: { num: 4, team: 2 }, position: { row: 0, col: 2 } },
 				{ piece: { num: 5, team: 2 }, position: { row: 0, col: 3 } },
 				{ piece: { num: 6, team: 2 }, position: { row: 0, col: 4 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 5 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 6 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 0, col: 7 } },
+				{ piece: { num: 4, team: 2 }, position: { row: 0, col: 5 } },
+				{ piece: { num: 3, team: 2 }, position: { row: 0, col: 6 } },
+				{ piece: { num: 2, team: 2 }, position: { row: 0, col: 7 } },
 			],
 			[
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 0 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 1 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 2 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 3 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 4 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 5 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 6 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 1, col: 7 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 0 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 1 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 2 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 3 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 4 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 5 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 6 } },
+				{ piece: { num: 1, team: 2 }, position: { row: 1, col: 7 } },
 			],
 			[
 				{ piece: { num: 0, team: 0 }, position: { row: 2, col: 0 } },
@@ -175,26 +92,109 @@ function Board() {
 				{ piece: { num: 0, team: 0 }, position: { row: 5, col: 7 } },
 			],
 			[
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 0 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 1 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 2 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 3 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 4 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 5 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 6 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 6, col: 7 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 0 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 1 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 2 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 3 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 4 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 5 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 6 } },
+				{ piece: { num: 1, team: 1 }, position: { row: 6, col: 7 } },
 			],
 			[
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 0 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 1 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 2 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 3 } },
+				{ piece: { num: 2, team: 1 }, position: { row: 7, col: 0 } },
+				{ piece: { num: 3, team: 1 }, position: { row: 7, col: 1 } },
+				{ piece: { num: 4, team: 1 }, position: { row: 7, col: 2 } },
+				{ piece: { num: 5, team: 1 }, position: { row: 7, col: 3 } },
 				{ piece: { num: 6, team: 1 }, position: { row: 7, col: 4 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 5 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 6 } },
-				{ piece: { num: 0, team: 0 }, position: { row: 7, col: 7 } },
+				{ piece: { num: 4, team: 1 }, position: { row: 7, col: 5 } },
+				{ piece: { num: 3, team: 1 }, position: { row: 7, col: 6 } },
+				{ piece: { num: 2, team: 1 }, position: { row: 7, col: 7 } },
 			],
 		];
+		// const initialBoard: CellInterface[][] = [
+		// 	// Black pieces (team 1)
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 2 } },
+		// 		{ piece: { num: 5, team: 2 }, position: { row: 0, col: 3 } },
+		// 		{ piece: { num: 6, team: 2 }, position: { row: 0, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 0, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 1, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 2, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 3, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 4, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 5, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 3 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 6, col: 7 } },
+		// 	],
+		// 	[
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 0 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 1 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 2 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 3 } },
+		// 		{ piece: { num: 6, team: 1 }, position: { row: 7, col: 4 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 5 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 6 } },
+		// 		{ piece: { num: 0, team: 0 }, position: { row: 7, col: 7 } },
+		// 	],
+		// ];
 
 		setBoard(initialBoard);
 		setPossibleMoves([]);
@@ -235,7 +235,7 @@ function Board() {
 				}
 			}
 		}
-	}, [board, isCellInDanger, isGameOver]);
+	}, [board, isGameOver]);
 
 	function getSquareNotation(position: PositionInterface) {
 		const col = String.fromCharCode(position.col + 97);
@@ -865,7 +865,7 @@ function Board() {
 		position: PositionInterface,
 		b: CellInterface[][]
 	) {
-		const initialRow = piece.team == 1 ? 5 : 1;
+		const initialRow = piece.team == 1 ? 6 : 1;
 		const possibleMoves: MoveInterface[] = [];
 
 		const isPawnInInitialRow = position.row == initialRow;
